@@ -84,17 +84,19 @@ static void net_event_handler(int ev, void *evd, void *arg) {
   switch (ev) {
     case MGOS_NET_EV_IP_ACQUIRED: {
       struct mgos_net_ip_info ip_info;
-      mgos_net_get_ip_info(data->if_type, data->if_instance, &ip_info);
-      char ip[16], gw[16];
-      memset(ip, 0, sizeof(ip));
-      memset(gw, 0, sizeof(gw));
-      mgos_net_ip_to_str(&ip_info.ip, ip);
-      mgos_net_ip_to_str(&ip_info.gw, gw);
-      char *nameserver = mgos_get_nameserver();
-      LOG(LL_INFO, ("Got IP - ip=%s, gw=%s, dns=%s", ip, gw,
-                    nameserver ? nameserver : "NULL"));
-      if (NULL != nameserver) {
-        free(nameserver);
+      if (data != NULL) {
+        mgos_net_get_ip_info(data->if_type, data->if_instance, &ip_info);
+        char ip[16], gw[16];
+        memset(ip, 0, sizeof(ip));
+        memset(gw, 0, sizeof(gw));
+        mgos_net_ip_to_str(&ip_info.ip, ip);
+        mgos_net_ip_to_str(&ip_info.gw, gw);
+        char *nameserver = mgos_get_nameserver();
+        LOG(LL_INFO, ("Got IP - ip=%s, gw=%s, dns=%s", ip, gw,
+                      nameserver ? nameserver : "NULL"));
+        if (NULL != nameserver) {
+          free(nameserver);
+        }
       }
       if (!init) {
         init = true;
